@@ -9,7 +9,7 @@ interface Props {
   onPrev: () => void;
 }
 
-function Field({ label, name, type = "text", placeholder, value, onChange, required = true }: {
+function Field({ label, name: _name, type = "text", placeholder, value, onChange, required = true }: {
   label: string; name: string; type?: string; placeholder?: string;
   value: string; onChange: (v: string) => void; required?: boolean;
 }) {
@@ -18,7 +18,7 @@ function Field({ label, name, type = "text", placeholder, value, onChange, requi
       <label className="label">{label}{required && <span className="text-bordeaux ml-1">*</span>}</label>
       <input
         type={type}
-        name={name}
+        name={_name}
         className="input-field"
         placeholder={placeholder}
         value={value}
