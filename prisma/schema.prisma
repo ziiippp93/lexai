@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  password     String
+  createdAt    DateTime      @default(now())
+  applications Application[]
+}
+
+model Application {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  docType       String
+  situation     String
+  sphere        String?
+  organ         String?
+  place         String?
+  formData      String
+  description   String
+  generatedText String?
+  status        String   @default("new")
+  price         Int
+  paid          Boolean  @default(false)
+  paymentId     String?
+  pdfUrl        String?
+  docxUrl       String?
+  createdAt     DateTime @default(now())
+}
