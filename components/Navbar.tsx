@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { IconMenu2, IconX, IconScale } from "@tabler/icons-react";
+import { IconMenu2, IconX, IconScale, IconMessageCircle } from "@tabler/icons-react";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -20,6 +20,10 @@ export default function Navbar() {
             <Link href="/services" className="hover:text-gold transition-colors">Услуги</Link>
             <Link href="/about" className="hover:text-gold transition-colors">О нас</Link>
             <Link href="/contacts" className="hover:text-gold transition-colors">Контакты</Link>
+            <Link href="/chat" className="flex items-center gap-1 hover:text-gold transition-colors">
+              <IconMessageCircle size={16} />
+              AI-Юрист
+            </Link>
           </div>
           <div className="hidden md:flex items-center gap-3">
             {session ? (
@@ -45,6 +49,10 @@ export default function Navbar() {
             <Link href="/services" onClick={() => setOpen(false)} className="hover:text-gold">Услуги</Link>
             <Link href="/about" onClick={() => setOpen(false)} className="hover:text-gold">О нас</Link>
             <Link href="/contacts" onClick={() => setOpen(false)} className="hover:text-gold">Контакты</Link>
+            <Link href="/chat" onClick={() => setOpen(false)} className="hover:text-gold flex items-center gap-1">
+              <IconMessageCircle size={16} />
+              AI-Юрист
+            </Link>
             {session ? (
               <>
                 <Link href="/dashboard" onClick={() => setOpen(false)} className="hover:text-gold">Личный кабинет</Link>
