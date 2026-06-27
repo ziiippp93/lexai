@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 
   const buffer = await generatePDFBuffer(app.generatedText);
-  return new NextResponse(buffer, {
+  return new Response(buffer, {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="lexai-document-${params.id.slice(0, 8)}.pdf"`,
