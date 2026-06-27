@@ -1,8 +1,6 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import fs from "fs";
-import path from "path";
 
-export async function generatePDF(id: string, text: string): Promise<string> {
+export async function generatePDFBuffer(text: string): Promise<Buffer> {
   const pdfDoc = await PDFDocument.create();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -67,10 +65,18 @@ export async function generatePDF(id: string, text: string): Promise<string> {
     y -= lineHeight;
   }
 
+  const pdfBytes = await pdfDoc.save();
+  return Buffer.from(pdfBytes);
+}
+
+/** @deprecated Используй generatePDFBuffer — пишет в память, не на диск */
+export async function generatePDF(id: string, text: string): Promise<string> {
+  const fs = await import("fs");
+  const path = await import("path");
   const dir = path.join(process.cwd(), "uploads");
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   const filePath = path.join(dir, `${id}.pdf`);
-  const pdfBytes = await pdfDoc.save();
-  fs.writeFileSync(filePath, pdfBytes);
+  const buffer = await generatePDFBuffer(text);
+  fs.writeFileSync(filePath, buffer);
   return filePath;
 }

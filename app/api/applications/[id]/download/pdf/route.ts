@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import fs from "fs";
+import { generatePDFBuffer } from "@/lib/pdf";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
@@ -13,12 +13,12 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   const userId = (session.user as { id?: string }).id!;
   const app = await prisma.application.findFirst({ where: { id: params.id, userId } });
 
-  if (!app || !app.paid || !app.pdfUrl) {
+  if (!app || !app.paid || !app.generatedText) {
     return NextResponse.json({ error: "Файл недоступен" }, { status: 404 });
   }
 
-  const file = fs.readFileSync(app.pdfUrl);
-  return new NextResponse(file, {
+  const buffer = await generatePDFBuffer(app.generatedText);
+  return new NextResponse(buffer, {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="lexai-document-${params.id.slice(0, 8)}.pdf"`,

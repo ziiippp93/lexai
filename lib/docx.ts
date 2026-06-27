@@ -1,11 +1,7 @@
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from "docx";
-import fs from "fs";
-import path from "path";
 
-export async function generateDocx(id: string, text: string): Promise<string> {
-  const paragraphs = text.split("\n");
-
-  const children = paragraphs.map((line) => {
+function buildDocxChildren(text: string) {
+  return text.split("\n").map((line) => {
     if (!line.trim()) {
       return new Paragraph({ text: "" });
     }
@@ -35,20 +31,23 @@ export async function generateDocx(id: string, text: string): Promise<string> {
       ],
     });
   });
+}
 
+export async function generateDocxBuffer(text: string): Promise<Buffer> {
   const doc = new Document({
-    sections: [
-      {
-        properties: {},
-        children,
-      },
-    ],
+    sections: [{ properties: {}, children: buildDocxChildren(text) }],
   });
+  return Packer.toBuffer(doc);
+}
 
+/** @deprecated Используй generateDocxBuffer — пишет в память, не на диск */
+export async function generateDocx(id: string, text: string): Promise<string> {
+  const fs = await import("fs");
+  const path = await import("path");
   const dir = path.join(process.cwd(), "uploads");
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   const filePath = path.join(dir, `${id}.docx`);
-  const buffer = await Packer.toBuffer(doc);
+  const buffer = await generateDocxBuffer(text);
   fs.writeFileSync(filePath, buffer);
   return filePath;
 }
