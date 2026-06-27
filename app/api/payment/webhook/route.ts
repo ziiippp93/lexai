@@ -1,13 +1,14 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { generatePDF } from "@/lib/pdf";
-import { generateDocx } from "@/lib/docx";
-import { sendEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
+    const { prisma } = await import("@/lib/prisma");
+    const { generatePDF } = await import("@/lib/pdf");
+    const { generateDocx } = await import("@/lib/docx");
+    const { sendEmail } = await import("@/lib/email");
+
     const body = await req.json();
     if (body.event !== "payment.succeeded") return NextResponse.json({ ok: true });
 

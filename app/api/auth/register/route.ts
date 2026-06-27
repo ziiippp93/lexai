@@ -1,11 +1,12 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   try {
+    const { prisma } = await import("@/lib/prisma");
+
     const { name, email, password } = await req.json();
 
     if (!name || !email || !password) {
