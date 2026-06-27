@@ -1,12 +1,13 @@
 export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { generatePDFBuffer } from "@/lib/pdf";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const { getServerSession } = await import("next-auth");
+  const { authOptions } = await import("@/lib/auth");
+  const { prisma } = await import("@/lib/prisma");
+  const { generatePDFBuffer } = await import("@/lib/pdf");
+
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
